@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace eriver
 {
-    public delegate void ETEventHandler(ETEvent e);
-    public delegate void TrackerCallback(int error, int result);
+    delegate void ETEventHandler(ETEvent e);
+    delegate void TrackerCallback(int error, int result);
 
     interface Tracker
     {

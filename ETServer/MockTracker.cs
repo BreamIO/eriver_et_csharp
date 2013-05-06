@@ -32,6 +32,19 @@ namespace eriver
             thread.Start();
         }
 
+        public void run()
+        {
+            foreach (ETEvent e in generateCircle())
+            {
+                foreach (ETEventHandler c in onETEvent)
+                {
+                    c(e);
+                }
+            }
+        }
+
+        #region Generators
+
         private IEnumerable<ETEvent> generateCircle()
         {
             double t = 0;
@@ -43,16 +56,7 @@ namespace eriver
             }
         }
 
-        private void run()
-        {
-            foreach(ETEvent e in generateCircle())
-                {
-                    foreach (ETEventHandler c in onETEvent)
-                    {
-                        c(e);
-                    }
-                }
-        }
+        #endregion
 
         #region Tracker Members
 
