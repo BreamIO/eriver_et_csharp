@@ -21,6 +21,11 @@ namespace eriver
         private GetPointDelegate getpoint;
         private StartCalDelegate startcal;
         private EndCalDelegate endcal;
+        private ClearCalDelegate clearcal;
+        private AddPointDelegate addpoint;
+        private NameDelegate name;
+        private FpsDelegate fps;
+        private CheeseDelegate keepalive;
 
         #region setDelegates
         public void setDelegate(GetPointDelegate del)
@@ -36,6 +41,30 @@ namespace eriver
         public void setDelegate(EndCalDelegate del)
         {
             endcal = del;
+        }
+
+        public void setDelegate(ClearCalDelegate del)
+        {
+            clearcal = del;
+        }
+
+        public void setDelegate(AddPointDelegate del)
+        {
+            addpoint = del;
+        }
+
+        public void setDelegate(NameDelegate del)
+        {
+            name = del;
+        }
+
+        public void setDelegate(FpsDelegate del)
+        {
+            fps = del;
+        }
+        public void setDelegate(CheeseDelegate del)
+        {
+            keepalive = del;
         }
 
         #endregion
