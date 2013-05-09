@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eriver
+namespace eriver.trackers
 {
     delegate void ETEventHandler(ETEvent e);
     delegate void TrackerCallback(int error, int result);

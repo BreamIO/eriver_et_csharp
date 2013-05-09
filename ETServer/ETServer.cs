@@ -15,10 +15,6 @@ namespace eriver
             tracker.register_onETEvent(delegate(ETEvent e) 
             {
                 Console.WriteLine(e);
-                Protocol.EndCalDelegate hej = delegate()
-                {
-
-                };
             });
             Console.WriteLine("Hej!");
             
