@@ -12,10 +12,10 @@ namespace eriver.trackers
     class TobiiTracker : Tracker
     {
 
-        private bool running = true;
-        private Queue<Something> queue;
-        private bool enabled = false;
-        private bool calibrating = false;
+        //private bool running = true;
+        private Queue<object> queue;
+        //private bool enabled = false;
+        //private bool calibrating = false;
         private String etid = null;
         private IEyeTracker et = null;
         
@@ -23,9 +23,9 @@ namespace eriver.trackers
         public TobiiTracker()
         {
             if (!Library.IsInitialized) Library.Init();
-            queue =  = new Queue();
+            queue = new Queue<object>();
             Thread thread = new Thread(connect);
-            thread.start();
+            thread.Start();
         }
 
         private void connect() {
@@ -36,7 +36,7 @@ namespace eriver.trackers
 
         void browser_EyeTrackerFound(object sender, EyeTrackerInfoEventArgs e)
         {
-            EyeTrackerInfo temp_etinfo = e.EyeTrackerInfo
+            EyeTrackerInfo temp_etinfo = e.EyeTrackerInfo;
             if (temp_etinfo.Status == "ok")
                 etid = temp_etinfo.ProductId;
                 et = e.EyeTrackerInfo.Factory.CreateEyeTracker();

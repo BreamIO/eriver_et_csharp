@@ -14,7 +14,7 @@ namespace eriver.network
         public Command Type { get; set; }
 
         [SerializeWhen("Type", Command.GetPoint)]
-        public GetPoint GetPoint { get; set; }
+        public ETEvent GetPoint { get; set; }
 
         [SerializeWhen("Type", Command.StartCalibration)]
         public StartCalibration StartCalibration { get; set; }
@@ -27,7 +27,6 @@ namespace eriver.network
 
         [SerializeWhen("Type", Command.Fps)]
         public Fps Fps { get; set; }
-
 
     }
 }

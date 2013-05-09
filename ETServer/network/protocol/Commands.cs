@@ -21,17 +21,7 @@ namespace eriver.network.commands
         KeepAlive = 9
     }
 
-    class GetPoint
-    {
-        [SerializeAs(Endianness = Endianness.Big)]
-        public double X { get; set; }
-
-        [SerializeAs(Endianness = Endianness.Big)]
-        public double Y { get; set; }
-
-        [SerializeAs(Endianness = Endianness.Big)]
-        public long Timestamp { get; set; }
-    }
+    ///GetPoint is represented as a ETEvent object.
 
     class StartCalibration
     {
@@ -51,12 +41,12 @@ namespace eriver.network.commands
     class Name
     {
         [SerializeAs(Endianness = Endianness.Big)]
-        public byte Name { get; set; }
+        public byte Value { get; set; }
     }
 
     class Fps
     {
         [SerializeAs(Endianness = Endianness.Big)]
-        public uint Fps { get; set; }
+        public uint Value { get; set; }
     }
 }
