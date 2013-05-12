@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace eriver.trackers
+using Eriver.Network.Commands;
+
+namespace Eriver.Trackers
 {
-    class MockTracker : Tracker
+    class MockTracker : ITracker
     {
 
         List<ETEventHandler> onETEvent; //Should be List, but doesn't work for some reason...
@@ -34,7 +36,7 @@ namespace eriver.trackers
 
         public void run()
         {
-            foreach (ETEvent e in generateCircle())
+            foreach (GetPoint e in generateCircle())
             {
                 foreach (ETEventHandler c in onETEvent)
                 {
@@ -45,12 +47,12 @@ namespace eriver.trackers
 
         #region Generators
 
-        private IEnumerable<ETEvent> generateCircle()
+        private IEnumerable<GetPoint> generateCircle()
         {
             double t = 0;
             while(true) 
             {
-                yield return new ETEvent(Math.Cos(t), Math.Sin(t), (long)(DateTime.UtcNow-new DateTime (1970, 1, 1)).TotalMilliseconds);
+                yield return new GetPoint(Math.Cos(t), Math.Sin(t), (long)(DateTime.UtcNow-new DateTime (1970, 1, 1)).TotalMilliseconds);
                 t+=step;
                 Thread.Sleep(1000 / fps);
             }
@@ -60,70 +62,80 @@ namespace eriver.trackers
 
         #region Tracker Members
 
-        void Tracker.register_onETEvent(ETEventHandler callback)
+        void ITracker.RegisterOnETEvent(ETEventHandler callback)
         {
             onETEvent.Add(callback);
         }
 
-        void Tracker.enable(TrackerCallback callback)
+        void ITracker.Enable(TrackerCallback callback)
         {
             active = true;
-            callback(0, 1);
+            if (callback != null)
+                callback(0, 1);
         }
 
-        void Tracker.disable(TrackerCallback callback)
+        void ITracker.Disable(TrackerCallback callback)
         {
             active = false;
-            callback(0, 1);
+            if (callback != null)
+                callback(0, 1);
         }
 
-        void Tracker.getState(TrackerCallback callback)
+        void ITracker.GetState(TrackerCallback callback)
         {
             int status = 0 + (active ? 1:0) + (calibrating ? 1:0 << 1);
-            callback(0, status);
+            if (callback != null)
+                callback(0, status);
         }
 
-        void Tracker.startCalibration(double angle, TrackerCallback callback)
+        void ITracker.StartCalibration(double angle, TrackerCallback callback)
         {
             calibrating = true;
-            callback(0, 1);
+            if (callback != null)
+                callback(0, 1);
         }
 
-        void Tracker.endCalibration(TrackerCallback callback)
+        void ITracker.EndCalibration(TrackerCallback callback)
         {
             calibrating = false;
-            callback(0, 1);
+            if (callback != null)
+                callback(0, 1);
         }
 
-        void Tracker.clearCalibration(TrackerCallback callback)
+        void ITracker.ClearCalibration(TrackerCallback callback)
         {
-            callback(calibrating ? 0: 1, 1);
+            if (callback != null)
+                callback(calibrating ? 0 : 1, 1);
         }
 
-        void Tracker.addPoint(double x, double y, TrackerCallback callback)
+        void ITracker.AddPoint(double x, double y, TrackerCallback callback)
         {
-            callback(calibrating ? 0 : 1, 1);
+            if (callback != null)
+                callback(calibrating ? 0 : 1, 1);
         }
 
-        void Tracker.getName(TrackerCallback callback)
+        void ITracker.GetName(TrackerCallback callback)
         {
-            callback(0, name);
+            if (callback != null)
+                callback(0, name);
         }
 
-        void Tracker.getRates(TrackerCallback callback)
+        void ITracker.GetRates(TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.getRate(TrackerCallback callback)
+        void ITracker.GetRate(TrackerCallback callback)
         {
-            callback(0, fps);
+            if (callback != null)
+                callback(0, fps);
         }
 
-        void Tracker.setRate(int rate, TrackerCallback callback)
+        void ITracker.SetRate(int rate, TrackerCallback callback)
         {
             fps = rate;
-            callback(0, fps);
+            if (callback != null)
+                callback(0, fps);
         }
 
         #endregion

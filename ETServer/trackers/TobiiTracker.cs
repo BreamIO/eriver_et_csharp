@@ -7,9 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tobii.EyeTracking.IO;
 
-namespace eriver.trackers
+namespace Eriver.Trackers
 {
-    class TobiiTracker : Tracker
+    class TobiiTracker : ITracker
     {
 
         //private bool running = true;
@@ -44,62 +44,62 @@ namespace eriver.trackers
 
         #region Tracker Members
 
-        void Tracker.register_onETEvent(ETEventHandler callback)
+        void ITracker.RegisterOnETEvent(ETEventHandler callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.enable(TrackerCallback callback)
+        void ITracker.Enable(TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.disable(TrackerCallback callback)
+        void ITracker.Disable(TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.getState(TrackerCallback callback)
+        void ITracker.GetState(TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.startCalibration(double angle, TrackerCallback callback)
+        void ITracker.StartCalibration(double angle, TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.endCalibration(TrackerCallback callback)
+        void ITracker.EndCalibration(TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.clearCalibration(TrackerCallback callback)
+        void ITracker.ClearCalibration(TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.addPoint(double x, double y, TrackerCallback callback)
+        void ITracker.AddPoint(double x, double y, TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.getName(TrackerCallback callback)
+        void ITracker.GetName(TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.getRates(TrackerCallback callback)
+        void ITracker.GetRates(TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.getRate(TrackerCallback callback)
+        void ITracker.GetRate(TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
 
-        void Tracker.setRate(int rate, TrackerCallback callback)
+        void ITracker.SetRate(int rate, TrackerCallback callback)
         {
             throw new NotImplementedException();
         }
