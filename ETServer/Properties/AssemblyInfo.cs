@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ETServer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Bream Team")]
 [assembly: AssemblyProduct("ETServer")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
@@ -32,12 +32,13 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.5.*")]
+[assembly: AssemblyFileVersion("0.5.*")]
 
 // Configure log4net using the .config file
-[assembly: log4net.Config.XmlConfigurator(ConfigFile = "ETServer_logging", ConfigFileExtension = ".xml", Watch = true)]
+//[assembly: log4net.Config.XmlConfigurator(ConfigFile = "ETServer_logging", ConfigFileExtension = ".xml", Watch = true)]
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "logging.config", Watch = true)]
 // This will cause log4net to look for a configuration file
-// called TestApp.exe.config in the application base
+// called logging.xml in the application base
 // directory (i.e. the directory containing TestApp.exe)
 // The config file will be watched for changes.

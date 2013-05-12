@@ -10,24 +10,42 @@ using Eriver.Network;
 
 namespace Eriver.Network
 {
-    class EriverProtocol
+    public class EriverProtocol
     {
-        public Command Type { get; set; }
+        public Command Kind { get; set; }
 
-        [SerializeWhen("Type", Command.GetPoint)]
+        [SerializeWhen("Kind", Command.GetPoint)]
         public GetPoint GetPoint { get; set; }
 
-        [SerializeWhen("Type", Command.StartCalibration)]
+        [SerializeWhen("Kind", Command.StartCalibration)]
         public StartCalibration StartCalibration { get; set; }
 
-        [SerializeWhen("Type", Command.AddPoint)]
+        [SerializeWhen("Kind", Command.AddPoint)]
         public AddPoint AddPoint { get; set; }
 
-        [SerializeWhen("Type", Command.Name)]
+        [SerializeWhen("Kind", Command.Name)]
         public Name Name { get; set; }
 
-        [SerializeWhen("Type", Command.Fps)]
+        [SerializeWhen("Kind", Command.Fps)]
         public Fps Fps { get; set; }
+
+        public override string ToString()
+        {
+
+            switch (Kind)
+            {
+                case Command.GetPoint: return GetPoint.ToString();
+                case Command.StartCalibration: return StartCalibration.ToString();
+                case Command.EndCalibration: return "EndCalibration()";
+                case Command.ClearCalibration: return "ClearCalibration()";
+                case Command.AddPoint: return AddPoint.ToString();
+                case Command.Unavaliable: return "Unavaliable()";
+                case Command.Name: return Name.ToString();
+                case Command.Fps: return Fps.ToString();
+                case Command.KeepAlive: return "KeepAlive()";
+                default: return "Unknown(?)";
+            }
+        } 
 
     }
 }

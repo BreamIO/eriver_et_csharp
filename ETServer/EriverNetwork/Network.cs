@@ -9,19 +9,19 @@ using BinarySerialization;
 
 namespace Eriver.Network
 {
-    class StreamReaderWriter
+    public class EriverStreamReaderWriter
     {
         static BinarySerializer serializer = new BinarySerializer();
         Stream stream;
 
-        public StreamReaderWriter(Stream stream)
+        public EriverStreamReaderWriter(Stream stream)
         {
             this.stream = stream;
         }
 
-        public EriverProtocol Read()
+        public EriverProtocol Read() 
         {
-            return serializer.Deserialize<EriverProtocol>(stream);
+                return serializer.Deserialize<EriverProtocol>(stream);
         }
 
         public void Write(EriverProtocol proto)

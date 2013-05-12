@@ -8,12 +8,13 @@ using BinarySerialization;
 namespace Eriver.Network.Commands
 {
 
-    enum Command : byte
+    public enum Command : byte
     {
+        Unknown = 0,
         GetPoint = 1,
         StartCalibration = 2,
         EndCalibration = 3,
-        ClearCalibraton = 4,
+        ClearCalibration = 4,
         AddPoint = 5,
         Unavaliable = 6,
         Name = 7,
@@ -73,40 +74,80 @@ namespace Eriver.Network.Commands
         }
 
         /// <summary>
-        /// Provides a string representation of the data. 
-        /// Given on the form Classname(param1; param2; param3)
+        /// Provides a string representation of the data.
+        /// Given on the form Classname(param1; param2; param3;...)
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return String.Format("ETEvent({0:+0.00000;-0.00000}; {1:+0.00000;-0.00000}; {2:D9})", X, Y, Timestamp);
+            return String.Format("GetPoint({0:+0.00000;-0.00000}; {1:+0.00000;-0.00000}; {2:D9})", X, Y, Timestamp);
         }
     }
 
-    class StartCalibration
+    public class StartCalibration
     {
         [SerializeAs(Endianness = Endianness.Big)]
         public double Angle { get; set; }
+
+        /// <summary>
+        /// Provides a string representation of the data.
+        /// Given on the form Classname(param1; param2; param3;...)
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return String.Format("StartCalibration({0:+0.00000;-0.00000}", Angle);
+        }
     }
 
-    class AddPoint
+    public class AddPoint
     {
         [SerializeAs(Endianness = Endianness.Big)]
         public double X { get; set; }
 
         [SerializeAs(Endianness = Endianness.Big)]
         public double Y { get; set; }
+
+        /// <summary>
+        /// Provides a string representation of the data.
+        /// Given on the form Classname(param1; param2; param3;...)
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return String.Format("AddPoint({0:+0.00000;-0.00000}; {1:+0.00000;-0.00000})", X, Y);
+        }
     }
 
-    class Name
+    public class Name
     {
         [SerializeAs(Endianness = Endianness.Big)]
         public byte Value { get; set; }
+
+        /// <summary>
+        /// Provides a string representation of the data.
+        /// Given on the form Classname(param1; param2; param3;...)
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return String.Format("Name({0:D3})", Value);
+        }
     }
 
-    class Fps
+    public class Fps
     {
         [SerializeAs(Endianness = Endianness.Big)]
         public uint Value { get; set; }
+
+        /// <summary>
+        /// Provides a string representation of the data.
+        /// Given on the form Classname(param1; param2; param3;...)
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return String.Format("Fps({0:D9})", Value);
+        }
     }
 }

@@ -8,7 +8,7 @@ using Eriver.Network.Commands;
 
 namespace Eriver.Trackers
 {
-    public delegate void ETEventHandler(GetPoint e);
+    public delegate void ETEventHandler(GetPoint point);
     public delegate void TrackerCallback(int error, int result);
 
     public static class TrackerFactory

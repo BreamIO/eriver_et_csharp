@@ -16,6 +16,7 @@ using System.Threading;
 
 using log4net;
 using log4net.Config;
+using System.Configuration;
 
 
 namespace Eriver
@@ -45,7 +46,9 @@ namespace Eriver
 
         private void Init()
         {
+            //XmlConfigurator.Configure();
             logger = LogManager.GetLogger("Eriver.ETServer");
+            log4net.ThreadContext.Properties["id"] = "Id: " + name;
             logger.Info("Starting the eye tracker server with id " + name);
             shutdown = new ManualResetEvent(false);
             tracker = TrackerFactory.GetTracker(name);
@@ -63,17 +66,19 @@ namespace Eriver
                 TcpClient client = listener.AcceptTcpClient();
                 Stream stream = client.GetStream();
 
-                ConnectionHandler handler = new ConnectionHandler(name, stream, shutdown);
+                ConnectionHandler handler = new ConnectionHandler(name, "<unavaliable>", stream, shutdown);
                 Thread thread = new Thread(handler.Start);
                 thread.Start();
             }
             listener.Stop();
         }
 
-        public static void Main(string[] args)
+        public static void Main()
         {
             ETServer server = new ETServer();
             server.Start();
+            server.shutdown.WaitOne();
+            server.Dispose();
         }
 
         #region IDisposable Members
