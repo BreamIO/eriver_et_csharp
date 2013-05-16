@@ -4,6 +4,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETServer", "ETServer.csproj", "{8B2A0EEC-4869-4EEB-BF65-AAD8F7DB0C68}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B981056C-B855-4F5C-993F-B32F0C30BBC7} = {B981056C-B855-4F5C-993F-B32F0C30BBC7}
+		{C1E198C3-FE92-4AF2-8D05-AA36C2502F08} = {C1E198C3-FE92-4AF2-8D05-AA36C2502F08}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinRiver", "..\WpfApplication1\WinRiver.csproj", "{3163A2F4-F03C-4313-A7A9-12AA55FB7395}"
@@ -12,6 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinRiver", "..\WpfApplicati
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EriverNetwork", "EriverNetwork\EriverNetwork.csproj", "{B981056C-B855-4F5C-993F-B32F0C30BBC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EriverTrackers", "..\EriverTrackers\EriverTrackers.csproj", "{C1E198C3-FE92-4AF2-8D05-AA36C2502F08}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B981056C-B855-4F5C-993F-B32F0C30BBC7} = {B981056C-B855-4F5C-993F-B32F0C30BBC7}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +37,10 @@ Global
 		{B981056C-B855-4F5C-993F-B32F0C30BBC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B981056C-B855-4F5C-993F-B32F0C30BBC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B981056C-B855-4F5C-993F-B32F0C30BBC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1E198C3-FE92-4AF2-8D05-AA36C2502F08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1E198C3-FE92-4AF2-8D05-AA36C2502F08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1E198C3-FE92-4AF2-8D05-AA36C2502F08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1E198C3-FE92-4AF2-8D05-AA36C2502F08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

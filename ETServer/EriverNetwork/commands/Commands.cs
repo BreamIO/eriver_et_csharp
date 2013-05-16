@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using BinarySerialization;
 
-namespace Eriver.Network.Commands
+namespace Eriver.Network
 {
 
+    //Suppresed because it must be serialized as a byte.
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32")]
     public enum Command : byte
     {
         Unknown = 0,
@@ -16,10 +18,37 @@ namespace Eriver.Network.Commands
         EndCalibration = 3,
         ClearCalibration = 4,
         AddPoint = 5,
-        Unavaliable = 6,
+        Unavailable = 6,
         Name = 7,
         Fps = 8,
         KeepAlive = 9
+    }
+
+    public static class CommandConvert
+    {
+
+        private static Dictionary<Command, int> lengths = new Dictionary<Command, int>
+        {
+            {Command.GetPoint, 24}, 
+            {Command.StartCalibration, 8}, 
+            {Command.EndCalibration, 0}, 
+            {Command.ClearCalibration, 0}, 
+            {Command.AddPoint, 16}, 
+            {Command.Unavailable, 0}, 
+            {Command.Name, 1}, 
+            {Command.Fps, 4}, 
+            {Command.KeepAlive, 0}, 
+        };
+
+        public static byte ToByte(Command cmd)
+        {
+            return (byte)cmd;
+        }
+
+        public static int ToLength(Command cmd)
+        {
+            return lengths[cmd];
+        }
     }
 
     /// <summary>
@@ -63,13 +92,13 @@ namespace Eriver.Network.Commands
         /// Creation constructor
         /// Allows you to specify all values at creation time.
         /// </summary>
-        /// <param name="x">Value for X</param>
-        /// <param name="y">Value for Y</param>
+        /// <param name="x_component">Value for X</param>
+        /// <param name="yComponent">Value for Y</param>
         /// <param name="time">Timestamp to use for this data point.</param>
-        public GetPoint(double x, double y, long time)
+        public GetPoint(double xComponent, double yComponent, long time)
         {
-            X = x;
-            Y = y;
+            X = xComponent;
+            Y = yComponent;
             Timestamp = time;
         }
 
@@ -102,9 +131,13 @@ namespace Eriver.Network.Commands
 
     public class AddPoint
     {
+        //Suppressed because it should be called X. It is the X component of the coordinate.
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "X")]
         [SerializeAs(Endianness = Endianness.Big)]
         public double X { get; set; }
 
+        //Suppressed because it should be called Y. It is the Y component of the coordinate.
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Y")]
         [SerializeAs(Endianness = Endianness.Big)]
         public double Y { get; set; }
 

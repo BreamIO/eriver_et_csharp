@@ -11,7 +11,7 @@ using System.IO;
 
 using Eriver.Trackers;
 
-using Eriver.Network.Commands;
+using Eriver.Network;
 using System.Threading;
 
 using log4net;
@@ -65,7 +65,6 @@ namespace Eriver
             {
                 TcpClient client = listener.AcceptTcpClient();
                 Stream stream = client.GetStream();
-
                 ConnectionHandler handler = new ConnectionHandler(name, "<unavaliable>", stream, shutdown);
                 Thread thread = new Thread(handler.Start);
                 thread.Start();

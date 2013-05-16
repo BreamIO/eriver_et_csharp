@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Eriver.Network;
 using log4net;
+using Eriver.Trackers;
 
 namespace Eriver
 {
@@ -15,9 +16,12 @@ namespace Eriver
         private byte name;
         private string clientId;
         private Stream stream;
+        private EriverStreamReaderWriter readerWriter;
         private ManualResetEvent shutdown;
         private ManualResetEvent stop;
         private ILog logger;
+        private ITracker tracker;
+        public bool Listen { get; set; }
 
         public ConnectionHandler(byte name, string clientId, Stream stream, ManualResetEvent shutdown)
         {
@@ -29,12 +33,28 @@ namespace Eriver
             log4net.ThreadContext.Properties["id"] = "Id: " + clientId;
 
             this.stream = stream;
+            readerWriter = new EriverStreamReaderWriter(stream);
             this.shutdown = shutdown;
             this.stop = new ManualResetEvent(false);
+            tracker = TrackerFactory.GetTracker(name);
         }
 
         public void Start()
         {
+            tracker.RegisterOnETEvent(delegate(GetPoint point)
+            {
+                if (stop.WaitOne(0))
+                {
+                    tracker.Disable(null); 
+                    Thread.CurrentThread.Abort(); // Shutting down this thread.
+                    return;
+                }
+                EriverProtocol proto = new EriverProtocol();
+                proto.Kind = Command.GetPoint;
+                proto.GetPoint = point;
+                Send(proto);
+            });
+            tracker.Enable(null);
             using (log4net.ThreadContext.Stacks["NDC"].Push("Run"))
             {
                 Run();
@@ -44,14 +64,26 @@ namespace Eriver
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         private void Run()
         {
-            EriverStreamReaderWriter unmarshaller = new EriverStreamReaderWriter(stream);
-            EriverProtocol prot;
+            
+            EriverProtocol prot = new EriverProtocol();
+
+            // Sending name first according to spec.
+            prot.Kind = Command.Name;
+            prot.Name = new Name();
+            prot.Name.Value = name;
+            Send(prot);
+
             while (!shutdown.WaitOne(0) && !stop.WaitOne(0))
             {
                 try
                 {
-                    prot = unmarshaller.Read();
-                    logger.Debug(prot);
+                    prot = readerWriter.Read();
+                    using (log4net.ThreadContext.Stacks["NDC"].Push("ConnHandler_Handlers"))
+                    {
+                        var m = ConnHandler_Handlers.Messages[CommandConvert.ToByte(prot.Kind)]();
+                        logger.Debug("Read packet: " + prot);
+                        m.Accept(this, prot);
+                    }
                 }
                 catch (InvalidOperationException e)
                 {
@@ -66,6 +98,27 @@ namespace Eriver
             }
         }
 
+        public void Send(EriverProtocol proto)
+        {
+            logger.Debug("Writing packet: " + proto);
+            byte[] buf = EriverStreamReaderWriter.Transform(proto);
+            try
+            {
+                stream.Write(buf, 0, buf.Length);
+            }
+            catch (IOException e)
+            {
+                logger.Error("IOException while writing to stream. Closing handler.");
+                logger.Debug(e);
+                stop.Set();
+            }
+        }
+
+        public ITracker GetTracker()
+        {
+            return tracker;
+        }
+
         #region IDisposable Members
 
         public void Dispose()
@@ -78,4 +131,5 @@ namespace Eriver
 
         #endregion
     }
+
 }

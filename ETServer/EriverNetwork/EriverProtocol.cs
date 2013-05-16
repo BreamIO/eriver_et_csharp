@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BinarySerialization;
-using Eriver.Network.Commands;
-
 using Eriver.Network;
 
 namespace Eriver.Network
@@ -31,7 +29,6 @@ namespace Eriver.Network
 
         public override string ToString()
         {
-
             switch (Kind)
             {
                 case Command.GetPoint: return GetPoint.ToString();
@@ -39,7 +36,7 @@ namespace Eriver.Network
                 case Command.EndCalibration: return "EndCalibration()";
                 case Command.ClearCalibration: return "ClearCalibration()";
                 case Command.AddPoint: return AddPoint.ToString();
-                case Command.Unavaliable: return "Unavaliable()";
+                case Command.Unavailable: return "Unavaliable()";
                 case Command.Name: return Name.ToString();
                 case Command.Fps: return Fps.ToString();
                 case Command.KeepAlive: return "KeepAlive()";
