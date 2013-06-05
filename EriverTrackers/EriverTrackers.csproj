@@ -46,12 +46,18 @@
     <Compile Include="MockTracker.cs" />
     <Compile Include="TobiiTracker.cs" />
     <Compile Include="Tracker.cs" />
+    <Compile Include="XConf.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ETServer\EriverNetwork\EriverNetwork.csproj">
       <Project>{b981056c-b855-4f5c-993f-b32f0c30bbc7}</Project>
       <Name>EriverNetwork</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="tetio.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

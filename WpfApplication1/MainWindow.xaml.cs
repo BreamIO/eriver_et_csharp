@@ -12,17 +12,61 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Eriver.Network;
+using System.Net.Sockets;
+using System.Threading;
 
-namespace WpfApplication1
+namespace Eriver.Winriver
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        EriverStreamReaderWriter esrw;
+        TcpClient client = null;
+        GetPoint CurrentPoint { get; set; }
+        Thread bgThread;
+
         public MainWindow()
         {
+            CurrentPoint = new GetPoint(10, 20, 0);
+            bgThread = new Thread(handle);
+            bgThread.Start();
             InitializeComponent();
+        }
+
+        private void Connect_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Event! Connect to " + Host.Text.ToString() + ":" + Port.Text.ToString());
+            if (client != null)
+            {
+                esrw = null;
+                client.Close();
+                client = null;
+            }
+            client = new TcpClient(Host.Text.ToString(), Convert.ToInt32(Port.Text.ToString()));
+            esrw = new EriverStreamReaderWriter(client.GetStream());
+        }
+
+        private void MovePointer(double x, double y)
+        {
+            Canvas.SetTop(TrackerPoint, y);
+            Canvas.SetLeft(TrackerPoint, x);
+        }
+
+        private void handle()
+        {
+            while (true)
+            {
+                if (esrw != null)
+                {
+                    EriverProtocol ep = esrw.Read();
+                    if (ep.Kind == Command.GetPoint)
+                        MovePointer(ep.GetPoint.X, ep.GetPoint.Y);
+                }
+            }
         }
 
 

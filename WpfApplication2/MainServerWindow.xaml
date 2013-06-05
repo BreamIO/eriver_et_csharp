@@ -1,0 +1,55 @@
+﻿<Window x:Class="Eriver.GUIServer.ServerGUI"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             Title="ERiver ETServer" Height="400" Width="250">
+    <Window.Resources>
+        <DataTemplate x:Key="connectionListTemplate">
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Fill="Green" Width="10" Height="10"/>
+                <TextBlock Text="Connection to " />
+                <TextBlock Text="{Binding EndPoint}"/>
+            </StackPanel>
+        </DataTemplate>
+        <Color x:Key="ButtonColor">LawnGreen</Color>
+        <sys:Boolean x:Key="Active">true</sys:Boolean>
+        <sys:String x:Key="ButtonText">Start</sys:String>
+    </Window.Resources>
+
+    <Window.Background>
+        <LinearGradientBrush StartPoint="1 0">
+            <GradientStop Color="black" Offset="0.0" />
+            <GradientStop Color="Teal" Offset="0.1"/>
+            <GradientStop Color="black" Offset="0.2"/>
+        </LinearGradientBrush>
+    </Window.Background>
+
+    <Grid>
+        <Label HorizontalAlignment="Center">
+            <TextElement.FontSize>20</TextElement.FontSize>
+            <TextElement.FontWeight>Bold</TextElement.FontWeight>
+            <TextElement.Foreground>White</TextElement.Foreground>
+            Eriver
+        </Label>
+        <StackPanel Orientation="Vertical" Margin="0 40 0 0">
+            <StackPanel Orientation="Horizontal" Margin="15 0">
+                <Label Foreground="White" Width="33">Id:</Label>
+                <TextBox Width="80" Height="20" Name="IdBox" ToolTip="Number for Identification on the network" 
+                         IsEnabled="{StaticResource ResourceKey=Active}">1</TextBox>
+            </StackPanel>
+
+            <ListBox Name="ConnectionList" Height="200" Margin="15"
+                     ToolTip="Connected clients"
+                     ItemsSource="{Binding Connections}" 
+                     ItemTemplate="{StaticResource connectionListTemplate}"/>
+
+            <Button Margin="15" Width="60"  Click="Start">
+                <Button.Background>
+                    <SolidColorBrush Color="{DynamicResource ResourceKey=ButtonColor}"/>
+                </Button.Background>
+                <TextBlock Text="{StaticResource ResourceKey=ButtonText}"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

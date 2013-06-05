@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Eriver.Network;
 using log4net;
 
-namespace Eriver.TerminalServer
+namespace Eriver.GUIServer
 {
     static class ConnHandler_Handlers
     {

@@ -15,12 +15,18 @@ namespace Eriver.Trackers
     {
         public static ITracker GetTracker()
         {
-            return new MockTracker(1, 44);
+            return Create(1);
         }
 
         public static ITracker GetTracker(byte id)
         {
+            return Create(id);
+        }
+
+        private static ITracker Create(byte id) 
+        {
             return new MockTracker(id, 44);
+            //return new TobiiTracker(id);
         }
     }
 

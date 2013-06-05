@@ -33,6 +33,8 @@ namespace Eriver.GUIServer
         string address;
         int port;
         TcpListener listener;
+        private Dispatcher dispatcher;
+        public ObservableCollection<ConnectionHandler> Connections { get; set; }
 
         public ETServer()
         {
@@ -58,6 +60,7 @@ namespace Eriver.GUIServer
             //XmlConfigurator.Configure();
             logger = LogManager.GetLogger(this.GetType());
             log4net.ThreadContext.Properties["id"] = "Id: " + name;
+            Connections = new ObservableCollection<ConnectionHandler>();
             logger.Info("Starting the eye tracker server with id " + name);
             shutdown = new ManualResetEvent(false);
             address = "0.0.0.0";
@@ -87,6 +90,11 @@ namespace Eriver.GUIServer
                 
                 Stream stream = client.GetStream();
                 ConnectionHandler handler = new ConnectionHandler(name, "<unavaliable>", stream, shutdown);
+                handler.OnStatusChanged += delegate(object sender, EventArgs args)
+                {
+                    dispatcher.BeginInvoke(new Action(delegate() { Connections.Remove((ConnectionHandler)sender); }));
+                };
+                dispatcher.BeginInvoke(new Action(delegate() { Connections.Add(handler); }));
                 Thread thread = new Thread(handler.Start);
                 thread.Start();
             }

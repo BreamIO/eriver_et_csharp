@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Eriver.Winriver
+namespace Eriver.GUIServer
 {
     /// <summary>
     /// Interaction logic for App.xaml

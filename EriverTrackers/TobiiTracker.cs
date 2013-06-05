@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tobii.EyeTracking.IO;
 using Eriver.Network;
+using EriverTrackers;
 
 namespace Eriver.Trackers
 {
@@ -23,7 +24,7 @@ namespace Eriver.Trackers
         private IEyeTracker et = null;
         public event ETEventHandler EtEventHandlers;
         private Point2D eye_distance;
-        
+
 
         public TobiiTracker(byte name)
         {
@@ -37,8 +38,9 @@ namespace Eriver.Trackers
             thread.Start();
         }
 
-        private void connect() {
-            EyeTrackerBrowser browser = new EyeTrackerBrowser();
+        private void connect()
+        {
+            EyeTrackerBrowser browser = new EyeTrackerBrowser(EventThreadingOptions.BackgroundThread);
             browser.EyeTrackerFound += browser_EyeTrackerFound;
             browser.StartBrowsing();
         }
@@ -50,13 +52,17 @@ namespace Eriver.Trackers
             if (temp_etinfo.Status == "ok")
             {
                 etid = temp_etinfo.ProductId;
-                et = e.EyeTrackerInfo.Factory.CreateEyeTracker();
+                et = e.EyeTrackerInfo.Factory.CreateEyeTracker(EventThreadingOptions.BackgroundThread);
 
                 //Setup event handlers for this tracker.
                 et.CalibrationStarted += et_CalibrationStarted;
                 et.CalibrationStopped += et_CalibrationStopped;
                 et.ConnectionError += et_ConnectionError;
                 et.GazeDataReceived += et_GazeDataRecieved;
+                if (enabled)
+                {
+                    et.StartTracking();
+                }
             }
         }
 
@@ -77,7 +83,6 @@ namespace Eriver.Trackers
         void et_ConnectionError(object sender, ConnectionErrorEventArgs e)
         {
             et.Dispose();
-            enabled = false;
             et = null;
         }
 
@@ -96,29 +101,66 @@ namespace Eriver.Trackers
 
         private GetPoint Henshin(IGazeDataItem gazeDataItem)
         {
-            int leftValidity  = gazeDataItem.LeftValidity;
+            int leftValidity = gazeDataItem.LeftValidity;
             int rightValidity = gazeDataItem.RightValidity;
-            Point2D left      = gazeDataItem.LeftGazePoint2D;
-            Point2D right     = gazeDataItem.RightGazePoint2D;
+            Point2D left = gazeDataItem.LeftGazePoint2D;
+            Point2D right = gazeDataItem.RightGazePoint2D;
             GetPoint answer = new GetPoint();
 
             if (leftValidity == BEST_VALIDITY && rightValidity == BEST_VALIDITY)
             {
                 eye_distance = new Point2D(right.X - left.X, right.Y - left.Y);
-            } else if (leftValidity == BEST_VALIDITY)
+            }
+            else if (leftValidity == BEST_VALIDITY)
             {
                 right.X = left.X + eye_distance.X;
-                right.X = left.Y + eye_distance.Y;
-            } else if (rightValidity == BEST_VALIDITY) {
-                right.X = left.X - eye_distance.X;
-                right.X = left.Y - eye_distance.Y;
-            } else {
+                right.Y = left.Y + eye_distance.Y;
+            }
+            else if (rightValidity == BEST_VALIDITY)
+            {
+                left.X = right.X - eye_distance.X;
+                left.Y = right.Y - eye_distance.Y;
+            }
+            else
+            {
 
             }
 
             answer.X = (left.X + right.X) / 2;
             answer.Y = (left.Y + right.Y) / 2;
             return answer;
+        }
+
+        private void setXconfig(double angle)
+        {
+            //Do XConfig
+            XConfSettings xconfSettings = new XConfSettings(512, 290, 0, 20, 3, 2); //Dreamhack values
+            /* Read from file in future.
+            try 
+            {
+                using(Open("eriver.xconf", "r") as File f) {
+                    XConfSettings.load(xconf, f);
+                }
+            }
+            catch (IOError e) 
+            {
+                Console.WriteLine("No XConf file. Continuing without...");
+            }
+            */
+
+            double[] x= new double[]{(-xconfSettings.Width)/2 + xconfSettings.Dx, xconfSettings.Width/2 - xconfSettings.Dx, (-xconfSettings.Width)/2 + xconfSettings.Dx};
+            double[] y= new double[]{xconfSettings.Heigth+xconfSettings.Dy, xconfSettings.Heigth+xconfSettings.Dy, xconfSettings.Dy};
+            double[] z= new double[]{xconfSettings.Dz, xconfSettings.Dz, xconfSettings.Dz};
+
+            double theta = Math.PI * ((angle + xconfSettings.Dangle) / 180);
+
+            XConfiguration xconf = new XConfiguration();
+
+            xconf.UpperLeft  = new Point3D( x[0], Math.Cos(theta)*y[0] - Math.Sin(theta)*z[0], Math.Sin(theta)*y[0] + Math.Cos(theta)*z[0]);
+            xconf.UpperRight = new Point3D( x[1], Math.Cos(theta)*y[1] - Math.Sin(theta)*z[1], Math.Sin(theta)*y[1] + Math.Cos(theta)*z[1]);
+            xconf.LowerLeft  = new Point3D( x[2], Math.Cos(theta)*y[2] - Math.Sin(theta)*z[2], Math.Sin(theta)*y[2] + Math.Cos(theta)*z[2]);
+
+            et.SetXConfiguration(xconf); //(UpperLeft, UpperRight, LowerLeft);
         }
 
         #region Tracker Members
@@ -128,30 +170,42 @@ namespace Eriver.Trackers
             EtEventHandlers += callback;
         }
 
-        
+
 
         void ITracker.Enable(TrackerCallback callback)
         {
-            et.StartTracking();
             enabled = true;
-            callback(0, 1);
-            throw new NotImplementedException();
+            if (et != null)
+            {
+                et.StartTracking();
+            }
+
+            if (callback != null)
+                callback(0, 1);
         }
 
         void ITracker.Disable(TrackerCallback callback)
         {
-            et.StopTracking();
             enabled = false;
-            callback(0, 1);
-            throw new NotImplementedException();
+
+            if (et != null)
+                et.StopTracking();
+
+            if (callback != null)
+                callback(0, 1);
         }
 
         void ITracker.GetState(TrackerCallback callback)
         {
-            int status = 0;
-            status |= enabled ? 1: 0;
-            status |= calibrating ? 1<<2 : 0;
-            callback(0, status);
+            if (et == null)
+            {
+                if (callback != null)
+                    callback(1, -1);
+                return;
+            }
+            int status = (enabled ? 1 : 0) + (calibrating ? 1 << 1 : 0);
+            if (callback != null)
+                callback(0, status);
         }
 
         void ITracker.StartCalibration(double angle, TrackerCallback callback)
@@ -159,47 +213,152 @@ namespace Eriver.Trackers
             if (et == null)
             {
                 callback(1, 0);
+                return;
             }
-            et.StartCalibration();
+            if (calibrating)
+            {
+                callback(1, 0);
+                return;
+            }
+            try
+            {
+                setXconfig(angle);
+                et.StartCalibration();
+            }
+            catch (EyeTrackerException e)
+            {
+                if (callback != null)
+                {
+                    callback(e.ErrorCode, 0);
+                }
+                return;
+            }
             calibrating = true;
-            callback(0, 1);
+            if (callback != null)
+                callback(0, 1);
         }
 
         void ITracker.EndCalibration(TrackerCallback callback)
         {
             if (et == null)
             {
-                callback(1, 0);
+                if (callback != null)
+                    callback(1, 0);
+                return;
             }
-            et.ComputeCalibration();
-            et.StopCalibration();
-            calibrating = true;
-            callback(0, 1);
+
+            if (!calibrating)
+            {
+                callback(1, 0);
+                return;
+            }
+
+            try
+            {
+                et.ComputeCalibration();
+            }
+            catch (EyeTrackerException e)
+            {
+                //If error is not OPERATION_FAILED
+                if (e.ErrorCode != 0x20000502)
+                {
+                    if (callback != null)
+                    {
+                        //We tell them of the error
+                        callback(e.ErrorCode, 0);
+                    }
+                    return;
+                }
+                //Or we continue and let it stop calibrating without 
+                // calculating anything.
+            }
+
+            try
+            {
+                et.StopCalibration();
+            }
+            catch (EyeTrackerException e)
+            {
+                if (callback != null)
+                {
+                    callback(e.ErrorCode, 0);
+                }
+                return;
+            }
+
+            calibrating = false;
+            if (callback != null)
+                callback(0, 1);
         }
 
         void ITracker.ClearCalibration(TrackerCallback callback)
         {
             if (et == null)
             {
-                callback(1, 0);
+                if (callback != null)
+                    callback(1, 0);
+                return;
             }
-            et.ClearCalibration();
-            callback(0, 1);
+
+            if (!calibrating)
+            {
+                callback(1, 0);
+                return;
+            }
+
+            try
+            {
+                et.ClearCalibration();
+            }
+            catch (EyeTrackerException e)
+            {
+                if (callback != null)
+                {
+                    callback(e.ErrorCode, 0);
+                }
+                return;
+            }
+
+            if (callback != null)
+                callback(0, 1);
         }
 
         void ITracker.AddPoint(double x, double y, TrackerCallback callback)
         {
             if (et == null)
             {
-                callback(1, 0);
+                if (callback != null)
+                    callback(1, 0);
+                return;
             }
-            et.AddCalibrationPoint(new Point2D(x, y));
-            callback(0, 1);
+
+            if (!calibrating)
+            {
+                callback(1, 0);
+                return;
+            }
+
+            try
+            {
+                et.AddCalibrationPoint(new Point2D(x, y));
+            }
+            catch (EyeTrackerException e)
+            {
+                if (callback != null)
+                {
+                    callback(e.ErrorCode, 0);
+                }
+                return;
+            }
+
+            if (callback != null)
+                callback(0, 1);
         }
 
         void ITracker.GetName(TrackerCallback callback)
         {
-            callback(0, name);
+            if (callback != null)
+                callback(0, name);
         }
 
         void ITracker.GetRates(TrackerCallback callback)
@@ -211,16 +370,37 @@ namespace Eriver.Trackers
 
         void ITracker.GetRate(TrackerCallback callback)
         {
-            callback(0, (int) et.GetFrameRate());
-            throw new NotImplementedException();
+            if (callback == null) return;
+            if (et == null)
+            {
+                if (callback != null)
+                    callback(1, 0);
+                return;
+            }
+
+            try
+            {
+                callback(0, (int)et.GetFrameRate());
+            }
+            catch (EyeTrackerException e)
+            {
+                callback(e.ErrorCode, 0);
+            }
         }
 
         void ITracker.SetRate(int rate, TrackerCallback callback)
         {
             if (et.EnumerateFrameRates().Contains((float)rate))
             {
+                if (et == null)
+                {
+                    if (callback != null)
+                        callback(1, 0);
+                    return;
+                }
                 et.SetFrameRate((float)rate);
-                callback(0, 1);
+                if (callback != null)
+                    callback(0, 1);
             }
             else
             {

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETServer", "ETServer.csproj", "{8B2A0EEC-4869-4EEB-BF65-AAD8F7DB0C68}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerminalServer", "TerminalServer.csproj", "{8B2A0EEC-4869-4EEB-BF65-AAD8F7DB0C68}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B981056C-B855-4F5C-993F-B32F0C30BBC7} = {B981056C-B855-4F5C-993F-B32F0C30BBC7}
 		{C1E198C3-FE92-4AF2-8D05-AA36C2502F08} = {C1E198C3-FE92-4AF2-8D05-AA36C2502F08}
@@ -10,6 +10,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinRiver", "..\WpfApplication1\WinRiver.csproj", "{3163A2F4-F03C-4313-A7A9-12AA55FB7395}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B981056C-B855-4F5C-993F-B32F0C30BBC7} = {B981056C-B855-4F5C-993F-B32F0C30BBC7}
+		{C1E198C3-FE92-4AF2-8D05-AA36C2502F08} = {C1E198C3-FE92-4AF2-8D05-AA36C2502F08}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EriverNetwork", "EriverNetwork\EriverNetwork.csproj", "{B981056C-B855-4F5C-993F-B32F0C30BBC7}"
@@ -18,6 +19,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EriverTrackers", "..\Eriver
 	ProjectSection(ProjectDependencies) = postProject
 		{B981056C-B855-4F5C-993F-B32F0C30BBC7} = {B981056C-B855-4F5C-993F-B32F0C30BBC7}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eriver_Tests", "..\Eriver_Tests\Eriver_Tests.csproj", "{C6C7F4C1-E1B8-4CC4-BD52-012220876B31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUIServer", "..\WpfApplication2\GUIServer.csproj", "{939B8F79-1C1F-4961-ABA2-2304E5F28BE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +46,13 @@ Global
 		{C1E198C3-FE92-4AF2-8D05-AA36C2502F08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1E198C3-FE92-4AF2-8D05-AA36C2502F08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1E198C3-FE92-4AF2-8D05-AA36C2502F08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6C7F4C1-E1B8-4CC4-BD52-012220876B31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6C7F4C1-E1B8-4CC4-BD52-012220876B31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6C7F4C1-E1B8-4CC4-BD52-012220876B31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{939B8F79-1C1F-4961-ABA2-2304E5F28BE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{939B8F79-1C1F-4961-ABA2-2304E5F28BE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{939B8F79-1C1F-4961-ABA2-2304E5F28BE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{939B8F79-1C1F-4961-ABA2-2304E5F28BE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -83,7 +83,7 @@ namespace Eriver.Trackers
 
         void ITracker.GetState(TrackerCallback callback)
         {
-            int status = 0 + (active ? 1:0) + (calibrating ? 1:0 << 1);
+            int status = 0 + (active ? 1 : 0) + (calibrating ? 1 << 1 : 0);
             if (callback != null)
                 callback(0, status);
         }
@@ -97,6 +97,12 @@ namespace Eriver.Trackers
 
         void ITracker.EndCalibration(TrackerCallback callback)
         {
+            if (!calibrating)
+            {
+                if (callback != null)
+                    callback(1, 0);
+                return;
+            }
             calibrating = false;
             if (callback != null)
                 callback(0, 1);

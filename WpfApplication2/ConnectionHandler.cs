@@ -9,7 +9,7 @@ using Eriver.Network;
 using log4net;
 using Eriver.Trackers;
 
-namespace Eriver.TerminalServer
+namespace Eriver.GUIServer
 {
 
     public delegate void StatusChangedHandler(object sender, EventArgs args);

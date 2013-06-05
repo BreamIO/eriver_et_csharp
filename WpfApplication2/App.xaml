@@ -1,9 +1,8 @@
-﻿<Application x:Class="Eriver.Winriver.App"
+﻿<Application x:Class="Eriver.GUIServer.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:c="clr-namespace:Eriver.Winriver"
-             StartupUri="MainWindow.xaml">
+             StartupUri="MainServerWindow.xaml">
     <Application.Resources>
-        
+         
     </Application.Resources>
 </Application>
