@@ -73,8 +73,6 @@ namespace Eriver.Trackers
                 return;
             }
 
-            e.GazeDataItem.
-
             GetPoint point = Henshin(e.GazeDataItem);
             point.Timestamp = e.GazeDataItem.Timestamp;
 

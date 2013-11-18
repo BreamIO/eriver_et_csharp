@@ -68,7 +68,7 @@ namespace Eriver.GUIServer
             logger.Info("Starting the eye tracker server with id " + name);
             shutdown = new ManualResetEvent(false);
             address = "0.0.0.0";
-            port = 4041;
+            port = 3031;
             listener = null;
         }
 
@@ -93,7 +93,7 @@ namespace Eriver.GUIServer
                 }
                 
                 Stream stream = client.GetStream();
-                ConnectionHandler handler = new ConnectionHandler(name, tracker_type, "<unavaliable>", stream, shutdown);
+                ConnectionHandler handler = new ConnectionHandler(name, tracker_type, "<unavaliable>", stream);
                 handler.OnStatusChanged += delegate(object sender, EventArgs args)
                 {
                     dispatcher.BeginInvoke(new Action(delegate() { Connections.Remove((ConnectionHandler)sender); }));
@@ -102,6 +102,7 @@ namespace Eriver.GUIServer
                 Thread thread = new Thread(handler.Start);
                 thread.Start();
             }
+
             listener.Stop();
             listener = null;
         }
@@ -118,6 +119,14 @@ namespace Eriver.GUIServer
 
         public void Dispose()
         {
+            dispatcher.BeginInvoke(new Action(delegate()
+            {
+                foreach (ConnectionHandler conn in Connections)
+                {
+                    conn.Kill();
+                }
+
+            }));
             if (listener != null)
                 listener.Stop();
             shutdown.Close();

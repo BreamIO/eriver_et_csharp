@@ -26,8 +26,9 @@ namespace Eriver.GUIServer
         public bool Listen { get; set; }
 
         public event StatusChangedHandler OnStatusChanged;
+        private bool requesting;
 
-        public ConnectionHandler(byte name, string tracker_type, string clientId, Stream stream, ManualResetEvent shutdown)
+        public ConnectionHandler(byte name, string tracker_type, string clientId, Stream stream)
         {
             this.name = name;
 
@@ -36,7 +37,6 @@ namespace Eriver.GUIServer
 
             this.stream = stream;
             readerWriter = new EriverStreamReaderWriter(stream);
-            this.shutdown = shutdown;
             this.stop = new ManualResetEvent(false);
             tracker = TrackerFactory.GetTracker(tracker_type, name);
         }
@@ -52,10 +52,12 @@ namespace Eriver.GUIServer
                     Thread.CurrentThread.Abort(); // Shutting down this thread.
                     return;
                 }
-                EriverProtocol proto = new EriverProtocol();
-                proto.Kind = Command.GetPoint;
-                proto.GetPoint = point;
-                Send(proto);
+                if (Listen) {
+                    EriverProtocol proto = new EriverProtocol();
+                    proto.Kind = Command.GetPoint;
+                    proto.GetPoint = point;
+                    Send(proto);
+                }
             });
             
             tracker.Enable(null);
@@ -77,15 +79,15 @@ namespace Eriver.GUIServer
             prot.Name.Value = name;
             Send(prot);
 
-            while (!shutdown.WaitOne(0) && !stop.WaitOne(0))
+            while (!stop.WaitOne(0))
             {
                 try
                 {
                     prot = readerWriter.Read();
                     using (log4net.ThreadContext.Stacks["NDC"].Push("ConnHandler_Handlers"))
                     {
-                        var m = ConnHandler_Handlers.Messages[CommandConvert.ToByte(prot.Kind)]();
                         logger.Debug("Read packet: " + prot);
+                        var m = ConnHandler_Handlers.Messages[CommandConvert.ToByte(prot.Kind)]();
                         m.Accept(this, prot);
                     }
                 }
@@ -98,8 +100,9 @@ namespace Eriver.GUIServer
                         logger.Debug(e);
                     }
                 }
-                
+
             }
+            stream.Close();
         }
 
         public void Send(EriverProtocol proto)
@@ -121,6 +124,11 @@ namespace Eriver.GUIServer
         public ITracker GetTracker()
         {
             return tracker;
+        }
+
+        public void Kill() {
+            stop.Set();
+            tracker.Disable(null);
         }
 
         #region IDisposable Members

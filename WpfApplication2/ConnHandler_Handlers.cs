@@ -53,9 +53,6 @@ namespace Eriver.GUIServer
             public override void Accept(ConnectionHandler ch, EriverProtocol packet)
             {
                 ch.Listen = !ch.Listen;
-                packet.GetPoint.X = -1;
-                packet.GetPoint.Y = 2;
-                ch.Send(packet);
             }
         }
 

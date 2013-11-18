@@ -37,16 +37,6 @@ namespace Eriver.GUIServer
         private void Stop(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ConnectionList.DataContext = null;
-            try
-            {
-                server.shutdown.Set();
-            }
-            catch (ObjectDisposedException)
-            {
-                // This means we shutdown the server before closing the app.
-                //This is normal behaviour.
-                return;
-            }
             server.Dispose();
         }
 
@@ -54,7 +44,7 @@ namespace Eriver.GUIServer
         {
             Button button = (Button)sender;
             try {
-                server = new ETServer(Convert.ToByte(IdBox.Text), "Mock", Dispatcher);
+                server = new ETServer(Convert.ToByte(IdBox.Text), TrackerType.Text, Dispatcher);
             } catch (Exception exc) {
                 MessageBox.Show(exc.Message);  
                 return;

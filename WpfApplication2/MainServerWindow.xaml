@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             Title="ERiver ETServer" Height="400" Width="250">
+             Title="ERiver ETServer" Height="430" Width="250">
     <Window.Resources>
         <DataTemplate x:Key="connectionListTemplate">
             <StackPanel Orientation="Horizontal">
