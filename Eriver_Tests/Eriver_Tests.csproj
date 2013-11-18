@@ -64,10 +64,6 @@
       <Project>{b981056c-b855-4f5c-993f-b32f0c30bbc7}</Project>
       <Name>EriverNetwork</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ETServer\TerminalServer.csproj">
-      <Project>{8b2a0eec-4869-4eeb-bf65-aad8f7db0c68}</Project>
-      <Name>TerminalServer</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

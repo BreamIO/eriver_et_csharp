@@ -27,9 +27,8 @@ namespace Eriver.GUIServer
 
         public event StatusChangedHandler OnStatusChanged;
 
-        public ConnectionHandler(byte name, string clientId, Stream stream, ManualResetEvent shutdown)
+        public ConnectionHandler(byte name, string tracker_type, string clientId, Stream stream, ManualResetEvent shutdown)
         {
-            // TODO: Complete member initialization
             this.name = name;
 
             logger = LogManager.GetLogger(this.GetType());
@@ -39,7 +38,7 @@ namespace Eriver.GUIServer
             readerWriter = new EriverStreamReaderWriter(stream);
             this.shutdown = shutdown;
             this.stop = new ManualResetEvent(false);
-            tracker = TrackerFactory.GetTracker(name);
+            tracker = TrackerFactory.GetTracker(tracker_type, name);
         }
 
         public void Start()

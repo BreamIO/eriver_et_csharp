@@ -46,9 +46,19 @@ namespace Eriver.Winriver
                 client.Close();
                 client = null;
             }
-            client = new TcpClient(Host.Text.ToString(), Convert.ToInt32(Port.Text.ToString()));
+
+            try
+            {
+                client = new TcpClient(Host.Text.ToString(), Convert.ToInt32(Port.Text.ToString()));
+            }
+            catch (SocketException)
+            {
+                MessageBox.Show("Error connecting to host. Please check that the other side is listening for requests on the port number.");
+                return;
+            }
             esrw = new EriverStreamReaderWriter(client.GetStream());
         }
+       
 
         private void MovePointer(double x, double y)
         {

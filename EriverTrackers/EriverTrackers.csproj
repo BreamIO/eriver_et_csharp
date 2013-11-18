@@ -29,6 +29,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -38,10 +41,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Tobii.EyeTracking.IO">
-      <HintPath>..\..\..\lib\dotNet\Tobii.EyeTracking.IO.dll</HintPath>
+      <HintPath>..\..\..\lib\.net\tobii-gaze-sdk-3.0.45-win-Win32\DotNet\Tobii.EyeTracking.IO.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ITrackerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MockTracker.cs" />
     <Compile Include="TobiiTracker.cs" />
@@ -58,6 +62,9 @@
     <Content Include="tetio.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ETServer_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

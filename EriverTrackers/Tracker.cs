@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Eriver.Network;
+using EriverTrackers;
 
 namespace Eriver.Trackers
 {
@@ -15,18 +16,25 @@ namespace Eriver.Trackers
     {
         public static ITracker GetTracker()
         {
-            return Create(1);
+            return Create("Mock", 1);
         }
 
         public static ITracker GetTracker(byte id)
         {
-            return Create(id);
+            return Create("Mock", id);
         }
 
-        private static ITracker Create(byte id) 
+        public static ITracker GetTracker(string type, byte id)
         {
-            return new MockTracker(id, 44);
-            //return new TobiiTracker(id);
+            return Create(type, id);
+        }
+
+        private static ITracker Create(string type, byte id) 
+        {
+            switch (type) {
+                case "Tobii": return new TobiiTracker(id);
+                default: return new MockTracker(id, 44);
+            }
         }
     }
 

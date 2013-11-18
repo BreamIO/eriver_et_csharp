@@ -75,7 +75,12 @@ namespace Eriver.Network
         /// the other end is not responsive, 
         /// and the connection should be terminated
         /// </summary>
-        KeepAlive = 9
+        KeepAlive = 9,
+
+
+        //MatchData = 10,
+
+        //ProfileData = 11
     }
 
     public static class CommandConvert
@@ -92,7 +97,8 @@ namespace Eriver.Network
             {Command.Unavailable, 0}, 
             {Command.Name, 1}, 
             {Command.Fps, 4}, 
-            {Command.KeepAlive, 0}, 
+            {Command.KeepAlive, 0}
+            //{Command.ProfileData, 48}
         };
 
         public static byte ToByte(Command cmd)
@@ -147,7 +153,7 @@ namespace Eriver.Network
         /// Creation constructor
         /// Allows you to specify all values at creation time.
         /// </summary>
-        /// <param name="x_component">Value for X</param>
+        /// <param name="xComponent">Value for X</param>
         /// <param name="yComponent">Value for Y</param>
         /// <param name="time">Timestamp to use for this data point.</param>
         public GetPoint(double xComponent, double yComponent, long time)
@@ -182,6 +188,11 @@ namespace Eriver.Network
                 (Math.Abs(this.Y - other.Y) < 0.01) &&
                 (this.Timestamp == other.Timestamp);
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     public class StartCalibration
@@ -211,6 +222,11 @@ namespace Eriver.Network
             }
 
             return (Math.Abs(this.Angle - other.Angle) < 0.01);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 
@@ -249,6 +265,11 @@ namespace Eriver.Network
 
             return (Math.Abs(this.X - other.X) < 0.01) && (Math.Abs(this.Y - other.Y) < 0.01);
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     public class Name
@@ -279,6 +300,11 @@ namespace Eriver.Network
 
             return (this.Value == other.Value);
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     public class Fps
@@ -308,6 +334,11 @@ namespace Eriver.Network
             }
 
             return (this.Value == other.Value);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

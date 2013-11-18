@@ -29,6 +29,7 @@ namespace Eriver.GUIServer
 
         public ManualResetEvent shutdown { get; set; }
         byte name;
+        string tracker_type;
         ILog logger;
         string address;
         int port;
@@ -38,18 +39,21 @@ namespace Eriver.GUIServer
 
         public ETServer()
         {
+            tracker_type = "Mock";
             name = 1;
             Init();
         }
 
-        public ETServer(byte id)
+        public ETServer(byte id, string tracker_type)
         {
+            this.tracker_type = tracker_type;
             name = id;
             Init();
         }
 
-        public ETServer(byte id, Dispatcher disp)
+        public ETServer(byte id, string tracker_type, Dispatcher disp)
         {
+            this.tracker_type = tracker_type;
             dispatcher = disp;
             name = id;
             Init();
@@ -89,7 +93,7 @@ namespace Eriver.GUIServer
                 }
                 
                 Stream stream = client.GetStream();
-                ConnectionHandler handler = new ConnectionHandler(name, "<unavaliable>", stream, shutdown);
+                ConnectionHandler handler = new ConnectionHandler(name, tracker_type, "<unavaliable>", stream, shutdown);
                 handler.OnStatusChanged += delegate(object sender, EventArgs args)
                 {
                     dispatcher.BeginInvoke(new Action(delegate() { Connections.Remove((ConnectionHandler)sender); }));

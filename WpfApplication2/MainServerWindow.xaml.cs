@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
+using Microsoft.Win32;
+using System.IO;
 
 namespace Eriver.GUIServer
 {
@@ -34,16 +36,25 @@ namespace Eriver.GUIServer
 
         private void Stop(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            server.shutdown.Set();
-            server.Dispose();
             ConnectionList.DataContext = null;
+            try
+            {
+                server.shutdown.Set();
+            }
+            catch (ObjectDisposedException)
+            {
+                // This means we shutdown the server before closing the app.
+                //This is normal behaviour.
+                return;
+            }
+            server.Dispose();
         }
 
         public void Start(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             try {
-                server = new ETServer(Convert.ToByte(IdBox.Text), Dispatcher);
+                server = new ETServer(Convert.ToByte(IdBox.Text), "Mock", Dispatcher);
             } catch (Exception exc) {
                 MessageBox.Show(exc.Message);  
                 return;
@@ -85,6 +96,35 @@ namespace Eriver.GUIServer
         {
             b.Click -= handle1;
             b.Click += handle2;
+        }
+
+        private void Load_Profile_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Loading is not yet implemented. :(");
+        }
+
+        private void Save_Profile_Click(object sender, RoutedEventArgs e)
+        {
+            Stream fStream;
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.AddExtension = true;
+            sfd.DefaultExt = ".fish";
+            sfd.DereferenceLinks = true;
+            sfd.OverwritePrompt = true;
+            sfd.Title = "What do you want the profile to be called?";
+
+            sfd.Filter = "Eriver Calibration Profile files (*.fish)|*.fish";
+            sfd.FilterIndex = 1;
+            sfd.RestoreDirectory = true;
+
+            if (sfd.ShowDialog() == true)
+            {
+                if ((fStream = sfd.OpenFile()) != null)
+                {
+                    fStream.WriteByte(42);
+                    fStream.Close();
+                }
+            }
         }
     }
 }

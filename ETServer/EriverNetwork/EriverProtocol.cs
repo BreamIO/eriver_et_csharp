@@ -13,20 +13,39 @@ namespace Eriver.Network
     /// </summary>
     public class EriverProtocol
     {
+        /// <summary>
+        /// Stores the type of message the packet contains.
+        /// This affects the contents of the other members.
+        /// </summary>
         public Command Kind { get; set; }
 
+        /// <summary>
+        /// Stores information of a GetPoint message if Kind is Command.GetPoint
+        /// </summary>
         [SerializeWhen("Kind", Command.GetPoint)]
         public GetPoint GetPoint { get; set; }
 
+        /// <summary>
+        /// Stores information of a StartCalibration message if Kind is Command.StartCalibration
+        /// </summary>
         [SerializeWhen("Kind", Command.StartCalibration)]
         public StartCalibration StartCalibration { get; set; }
 
+        /// <summary>
+        /// Stores information of a AddPoint message if Kind is Command.AddPoint
+        /// </summary>
         [SerializeWhen("Kind", Command.AddPoint)]
         public AddPoint AddPoint { get; set; }
 
+        /// <summary>
+        /// Stores information of a Name message if Kind is Command.Name
+        /// </summary>
         [SerializeWhen("Kind", Command.Name)]
         public Name Name { get; set; }
 
+        /// <summary>
+        /// Stores information of a Fps message if Kind is Command.Fps
+        /// </summary>
         [SerializeWhen("Kind", Command.Fps)]
         public Fps Fps { get; set; }
 
@@ -87,6 +106,28 @@ namespace Eriver.Network
                 default: return false;
             }
             
+        }
+
+        /// <summary>
+        /// Returns the hashCode of the message.
+        /// The code depends on the content of the message.
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            switch (Kind)
+            {
+                case Command.GetPoint: return 1+GetPoint.GetHashCode();
+                case Command.StartCalibration: return 2+StartCalibration.GetHashCode();
+                case Command.EndCalibration: return 3;
+                case Command.ClearCalibration: return 4;
+                case Command.AddPoint: return 5+AddPoint.GetHashCode();
+                case Command.Unavailable: return 6;
+                case Command.Name: return 7+Name.GetHashCode();
+                case Command.Fps: return 8+Fps.GetHashCode();
+                case Command.KeepAlive: return 9;
+                default: return 0;
+            }
         }
 
     }

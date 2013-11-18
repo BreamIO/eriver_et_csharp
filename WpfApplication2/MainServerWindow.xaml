@@ -34,9 +34,24 @@
         </Label>
         <StackPanel Orientation="Vertical" Margin="0 40 0 0">
             <StackPanel Orientation="Horizontal" Margin="15 0">
-                <Label Foreground="White" Width="33">Id:</Label>
-                <TextBox Width="80" Height="20" Name="IdBox" ToolTip="Number for Identification on the network" 
-                         IsEnabled="{StaticResource ResourceKey=Active}">1</TextBox>
+                <Label Foreground="White" Width="80">Id:</Label>
+                <TextBox Width="100" Height="20" Name="IdBox" ToolTip="Number for Identification on the network" 
+                         IsEnabled="{DynamicResource ResourceKey=Active}">1</TextBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="15 0">
+                <Label Foreground="White" Width="80">Tracker:</Label>
+                <ComboBox Width="100" Height="20" Name="TrackerType" ToolTip="Type of tracker to use." 
+                        SelectedIndex="0" IsEditable="False" IsEnabled="{DynamicResource ResourceKey=Active}" IsReadOnly="True">
+                    <sys:String>Mock</sys:String>
+                    <sys:String>Tobii</sys:String>
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="15 0" HorizontalAlignment="Center">
+                <Button Width="75" Margin="5" Name="Save_Profile" Click="Save_Profile_Click">Save Profile </Button>
+                
+                <Button Width="75" Margin="5" Name="Load_Profile" Click="Load_Profile_Click">Load Profile</Button>
             </StackPanel>
 
             <ListBox Name="ConnectionList" Height="200" Margin="15"
@@ -48,7 +63,7 @@
                 <Button.Background>
                     <SolidColorBrush Color="{DynamicResource ResourceKey=ButtonColor}"/>
                 </Button.Background>
-                <TextBlock Text="{StaticResource ResourceKey=ButtonText}"/>
+                <TextBlock Text="{DynamicResource ResourceKey=ButtonText}"/>
             </Button>
         </StackPanel>
     </Grid>
