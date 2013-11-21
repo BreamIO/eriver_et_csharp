@@ -8,6 +8,7 @@ using System.IO;
 using Eriver.Network;
 using log4net;
 using Eriver.Trackers;
+using System.Net.Sockets;
 
 namespace Eriver.GUIServer
 {
@@ -19,16 +20,28 @@ namespace Eriver.GUIServer
         private byte name;
         private Stream stream;
         private EriverStreamReaderWriter readerWriter;
-        private ManualResetEvent shutdown;
         private ManualResetEvent stop;
         private ILog logger;
         private ITracker tracker;
         public bool Listen { get; set; }
+        public ITracker Tracker {
+            get { return tracker; }
+        }
+        public String Description { get; set; }
 
         public event StatusChangedHandler OnStatusChanged;
-        private bool requesting;
 
-        public ConnectionHandler(byte name, string tracker_type, string clientId, Stream stream)
+        /// <summary>
+        /// Handler of connection to the ETServer
+        /// Reads data from the stream, and answers accordingly.
+        /// Deals with the tracker aswell using the ITracker interface.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="tracker_type"></param>
+        /// <param name="clientId"></param>
+        /// <param name="stream"></param>
+        /// <param name="description"></param>
+        public ConnectionHandler(byte name, string tracker_type, string clientId, NetworkStream stream, string description)
         {
             this.name = name;
 
@@ -39,6 +52,7 @@ namespace Eriver.GUIServer
             readerWriter = new EriverStreamReaderWriter(stream);
             this.stop = new ManualResetEvent(false);
             tracker = TrackerFactory.GetTracker(tracker_type, name);
+            Description = description;
         }
 
         public void Start()
@@ -111,11 +125,18 @@ namespace Eriver.GUIServer
             byte[] buf = EriverStreamReaderWriter.Transform(proto);
             try
             {
-                stream.Write(buf, 0, buf.Length);
+                if (stream != null)
+                    stream.Write(buf, 0, buf.Length);
             }
             catch (IOException e)
             {
                 logger.Error("IOException while writing to stream. Closing handler.");
+                logger.Debug(e);
+                stop.Set();
+            }
+            catch (ObjectDisposedException e)
+            {
+                logger.Error("ObjectDisposedException while writing to stream. Closing handler.");
                 logger.Debug(e);
                 stop.Set();
             }

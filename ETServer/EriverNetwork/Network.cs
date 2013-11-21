@@ -18,6 +18,7 @@ namespace Eriver.Network
     {
         static BinarySerializer serializer = new BinarySerializer();
         Stream stream;
+        public readonly String Description;
 
         /// <summary>
         /// Primary constructor for the Eriver Stream Reader/Writer.

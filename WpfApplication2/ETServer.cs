@@ -92,8 +92,8 @@ namespace Eriver.GUIServer
                     return;
                 }
                 
-                Stream stream = client.GetStream();
-                ConnectionHandler handler = new ConnectionHandler(name, tracker_type, "<unavaliable>", stream);
+                NetworkStream stream = client.GetStream();
+                ConnectionHandler handler = new ConnectionHandler(name, tracker_type, "<unavaliable>", stream, client.Client.RemoteEndPoint.ToString());
                 handler.OnStatusChanged += delegate(object sender, EventArgs args)
                 {
                     dispatcher.BeginInvoke(new Action(delegate() { Connections.Remove((ConnectionHandler)sender); }));

@@ -53,7 +53,7 @@ namespace Eriver.Trackers
             double t = 0;
             while(true) 
             {
-                yield return new GetPoint(Math.Cos(t), Math.Sin(t), (long)(DateTime.UtcNow-new DateTime (1970, 1, 1)).TotalMilliseconds);
+                yield return new GetPoint(0.5*Math.Cos(t)+0.5, 0.5*Math.Sin(t)+0.5, (long)(DateTime.UtcNow-new DateTime (1970, 1, 1)).TotalMilliseconds);
                 t+=step;
                 Thread.Sleep(1000 / fps);
             }

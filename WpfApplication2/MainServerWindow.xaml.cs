@@ -23,21 +23,34 @@ namespace Eriver.GUIServer
     /// </summary>
     public partial class ServerGUI : Window
     {
-        Thread th;
+        private Thread th;
         ETServer server;
+
+        public Boolean InActive
+        {
+            get { return (Boolean)GetValue(InActiveProperty); }
+            set { SetValue(InActiveProperty, value); }
+        }
+
+        public static readonly DependencyProperty InActiveProperty =
+            DependencyProperty.Register("InActive", typeof(Boolean),
+            typeof(ServerGUI), new UIPropertyMetadata(false));
 
         public ServerGUI()
         {
             th = null;
             server = null;
             Closing += Stop;
+            InActive = true;
             InitializeComponent();
+            this.DataContext = this;
         }
 
         private void Stop(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ConnectionList.DataContext = null;
-            server.Dispose();
+            if (server != null)
+                server.Dispose();
         }
 
         public void Start(object sender, RoutedEventArgs e)
@@ -50,11 +63,12 @@ namespace Eriver.GUIServer
                 return;
             }
 
-            IdBox.IsEnabled = false;
+            //IdBox.IsEnabled = false;
+            InActive = false;
             th = new Thread(server.Start);
             ClickSwap(button, Start, Stop);
-            this.Resources["ButtonColor"] = Colors.Red;
-            this.Resources["ButtonText"] = "Stop";
+            //this.Resources["ButtonColor"] = Colors.Red;
+            //this.Resources["ButtonText"] = "Stop";
             ConnectionList.DataContext = server;
             try
             {
@@ -75,11 +89,12 @@ namespace Eriver.GUIServer
             server.Dispose();
 
             ClickSwap(button, Stop, Start);
-            this.Resources["ButtonColor"] = Colors.LawnGreen;
-            this.Resources["ButtonText"] = "Start";
+            //this.Resources["ButtonColor"] = Colors.LawnGreen;
+            //this.Resources["ButtonText"] = "Start";
 
             ConnectionList.DataContext = null;
-            IdBox.IsEnabled = true;
+            //IdBox.IsEnabled = true;
+            InActive = true;
         }
 
         private void ClickSwap(Button b, RoutedEventHandler handle1, RoutedEventHandler handle2)
