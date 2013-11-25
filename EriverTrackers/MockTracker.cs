@@ -20,6 +20,9 @@ namespace Eriver.Trackers
         int fps;
         double step;
 
+        private static double dx;
+        private static double dy;
+        private static double aspectRatio;
 
         public MockTracker(byte name, int fps)
         {
@@ -28,6 +31,9 @@ namespace Eriver.Trackers
             this.name=name;
             this.fps = fps;
             step = 0.01;
+            aspectRatio = 9.0 / 16.0;
+            dx = 0;
+            dy = 0;
 
             onETEvent = new List<ETEventHandler>();
 
@@ -53,7 +59,7 @@ namespace Eriver.Trackers
             double t = 0;
             while(true) 
             {
-                yield return new GetPoint(0.5*Math.Cos(t)+0.5, 0.5*Math.Sin(t)+0.5, (long)(DateTime.UtcNow-new DateTime (1970, 1, 1)).TotalMilliseconds);
+                yield return new GetPoint(0.5*Math.Cos(t)+0.5+dx, 0.5*aspectRatio*Math.Sin(t)+0.5+dy, (long)(DateTime.UtcNow-new DateTime (1970, 1, 1)).TotalMilliseconds);
                 t+=step;
                 Thread.Sleep(1000 / fps);
             }
@@ -89,7 +95,7 @@ namespace Eriver.Trackers
                 callback(0, status);
         }
 
-        void ITracker.StartCalibration(double angle, TrackerCallback callback)
+        void ITracker.StartCalibration(TrackerCallback callback)
         {
             calibrating = true;
             if (callback != null)
@@ -121,6 +127,16 @@ namespace Eriver.Trackers
                 callback(calibrating ? 0 : 1, 1);
         }
 
+        byte[] ITracker.GetCalibration()
+        {
+            return new byte[] { 42, 13, 37, 47, 11 };
+        }
+        
+        void ITracker.SetCalibration(byte[] profile)
+        {
+            throw new NotSupportedException("Feature not implemented");
+        }
+
         void ITracker.GetName(TrackerCallback callback)
         {
             if (callback != null)
@@ -143,6 +159,13 @@ namespace Eriver.Trackers
             fps = rate;
             if (callback != null)
                 callback(0, fps);
+        }
+
+        void ITracker.SetXConfig(XConfSettings settings, double angle)
+        {
+            aspectRatio = settings.Height / settings.Width;
+            dx = settings.Dx;
+            dy = settings.Dy;
         }
         #endregion
     }

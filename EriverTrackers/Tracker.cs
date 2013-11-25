@@ -82,15 +82,12 @@ namespace Eriver.Trackers
 
         /// <summary>
         /// Puts the tracker in calibration mode.
-        /// The angle may be disregarded if not necessary, but it represents the angle
-        /// between the normal vector of the users table and the tracker.
         /// If the tracker does not support calibration, return False.
         /// If the tracker could not be placed in calibration mode, return False.
         /// callback is called with a result when the operation is completed.
         /// </summary>
-        /// <param name="angle"></param>
         /// <param name="callback"></param>
-        void StartCalibration(double angle, TrackerCallback callback);
+        void StartCalibration(TrackerCallback callback);
 
         /// <summary>
         /// Takes the tracker out of calibration mode.
@@ -109,9 +106,6 @@ namespace Eriver.Trackers
         /// <param name="callback"></param>
         void ClearCalibration(TrackerCallback callback);
 
-        /*
-         * 
-         */
         /// <summary>
         /// Adds the point (x, y) to the calibration.
         /// When this is called, the user is expected to be looking at that point.
@@ -140,6 +134,16 @@ namespace Eriver.Trackers
         /// </summary>
         /// <param name="profile">Array of bytes containing a calibration profile</param>
         void SetCalibration(byte[] profile);
+
+        /// <summary>
+        /// Sets a XConfig on the tracker. 
+        /// This allows the tracker to know some information about the Screen it is used with.
+        /// The angle may be disregarded if not necessary, but it represents the angle
+        /// between the normal vector of the users table and the tracker.
+        /// </summary>
+        /// <param name="angle">Angle given from calibrator</param>
+        /// <param name="settings">XConfiguration data</param>
+        void SetXConfig(XConfSettings settings, double angle);
 
         /// <summary>
         /// Free for interpretation of the implementor.

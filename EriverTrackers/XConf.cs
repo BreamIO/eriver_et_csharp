@@ -5,9 +5,9 @@ using System.Text;
 
 namespace EriverTrackers
 {
-    class XConfSettings
+    public class XConfSettings
     {
-        public double Heigth { get; set; }
+        public double Height { get; set; }
         public double Width { get; set; }
         public double Dx { get; set; }
         public double Dy { get; set; }
@@ -16,7 +16,7 @@ namespace EriverTrackers
 
         public XConfSettings(int Heigth, int Width, int Dx, int Dy, int Dz, int Dangle)
         {
-            this.Heigth = Heigth;
+            this.Height = Heigth;
             this.Width = Width;
             this.Dx = Dx;
             this.Dy = Dy;

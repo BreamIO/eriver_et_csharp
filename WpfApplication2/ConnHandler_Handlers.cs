@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Eriver.Network;
 using log4net;
+using EriverTrackers;
 
 namespace Eriver.GUIServer
 {
@@ -61,7 +62,15 @@ namespace Eriver.GUIServer
         {
             public override void Accept(ConnectionHandler ch, EriverProtocol packet)
             {
-                ch.GetTracker().StartCalibration(packet.StartCalibration.Angle, defaultAction(ch, packet));
+                XConfSettings xconf = new XConfSettings(
+                Properties.Settings.Default.ScreenHeight,
+                Properties.Settings.Default.ScreenWidth,
+                Properties.Settings.Default.TrackerDeltaX,
+                Properties.Settings.Default.TrackerDeltaY,
+                Properties.Settings.Default.TrackerDeltaZ,
+                Properties.Settings.Default.TrackerDeltaAngle);
+                ch.GetTracker().SetXConfig(xconf, packet.StartCalibration.Angle);
+                ch.GetTracker().StartCalibration(defaultAction(ch, packet));
             }
         }
 

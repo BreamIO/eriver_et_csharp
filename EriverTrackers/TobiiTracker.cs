@@ -131,10 +131,12 @@ namespace Eriver.Trackers
             return answer;
         }
 
-        private void setXconfig(double angle)
+        #region Tracker Members
+
+        void ITracker.SetXConfig(XConfSettings xconfig, double angle)
         {
             //Do XConfig
-            XConfSettings xconfSettings = new XConfSettings(512, 290, 0, 20, 3, 2); //Dreamhack values
+            //XConfSettings xconf = new XConfSettings(512, 290, 0, 20, 3, 2); //Dreamhack values
             /* Read from file in future.
             try 
             {
@@ -148,11 +150,11 @@ namespace Eriver.Trackers
             }
             */
 
-            double[] x= new double[]{(-xconfSettings.Width)/2 + xconfSettings.Dx, xconfSettings.Width/2 - xconfSettings.Dx, (-xconfSettings.Width)/2 + xconfSettings.Dx};
-            double[] y= new double[]{xconfSettings.Heigth+xconfSettings.Dy, xconfSettings.Heigth+xconfSettings.Dy, xconfSettings.Dy};
-            double[] z= new double[]{xconfSettings.Dz, xconfSettings.Dz, xconfSettings.Dz};
+            double[] x= new double[]{(-xconfig.Width)/2 + xconfig.Dx, xconfig.Width/2 - xconfig.Dx, (-xconfig.Width)/2 + xconfig.Dx};
+            double[] y= new double[]{xconfig.Height+xconfig.Dy, xconfig.Height+xconfig.Dy, xconfig.Dy};
+            double[] z= new double[]{xconfig.Dz, xconfig.Dz, xconfig.Dz};
 
-            double theta = Math.PI * ((angle + xconfSettings.Dangle) / 180);
+            double theta = Math.PI * ((angle + xconfig.Dangle) / 180);
 
             XConfiguration xconf = new XConfiguration();
 
@@ -163,14 +165,10 @@ namespace Eriver.Trackers
             et.SetXConfiguration(xconf); //(UpperLeft, UpperRight, LowerLeft);
         }
 
-        #region Tracker Members
-
         void ITracker.RegisterOnETEvent(ETEventHandler callback)
         {
             EtEventHandlers += callback;
         }
-
-
 
         void ITracker.Enable(TrackerCallback callback)
         {
@@ -208,7 +206,7 @@ namespace Eriver.Trackers
                 callback(0, status);
         }
 
-        void ITracker.StartCalibration(double angle, TrackerCallback callback)
+        void ITracker.StartCalibration(TrackerCallback callback)
         {
             if (et == null)
             {
@@ -222,7 +220,7 @@ namespace Eriver.Trackers
             }
             try
             {
-                setXconfig(angle);
+                //setXconfig(angle);
                 et.StartCalibration();
             }
             catch (EyeTrackerException e)
@@ -366,6 +364,18 @@ namespace Eriver.Trackers
             //This part of the interface is to be changed soon, so I do not implement it for now.
             //No part of the ETServer uses it anyway...
             throw new NotImplementedException();
+        }
+
+        byte[] ITracker.GetCalibration()
+        {
+            Calibration c = et.GetCalibration();
+            return c.RawData;
+        }
+
+        void ITracker.SetCalibration(byte[] profile)
+        {
+            Calibration c = new Calibration(profile);
+            et.SetCalibration(c);
         }
 
         void ITracker.GetRate(TrackerCallback callback)

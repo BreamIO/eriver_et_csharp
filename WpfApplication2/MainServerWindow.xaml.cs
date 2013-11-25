@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Threading;
 using Microsoft.Win32;
 using System.IO;
+using Eriver.Trackers;
 
 namespace Eriver.GUIServer
 {
@@ -44,6 +45,8 @@ namespace Eriver.GUIServer
             InActive = true;
             InitializeComponent();
             this.DataContext = this;
+            IdBox.Text = Eriver.GUIServer.Properties.Settings.Default.ID.ToString();
+            TrackerType.SelectedItem = Properties.Settings.Default.TrackerType;
         }
 
         private void Stop(object sender, System.ComponentModel.CancelEventArgs e)
@@ -58,6 +61,9 @@ namespace Eriver.GUIServer
             Button button = (Button)sender;
             try {
                 server = new ETServer(Convert.ToByte(IdBox.Text), TrackerType.Text, Dispatcher);
+                Properties.Settings.Default.ID = Convert.ToByte(IdBox.Text);
+                Properties.Settings.Default.TrackerType = TrackerType.Text;
+                Properties.Settings.Default.Save();
             } catch (Exception exc) {
                 MessageBox.Show(exc.Message);  
                 return;
@@ -105,7 +111,42 @@ namespace Eriver.GUIServer
 
         private void Load_Profile_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Loading is not yet implemented. :(");
+            Stream fStream;
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.AddExtension = true;
+            ofd.DefaultExt = ".fish";
+            ofd.DereferenceLinks = true;
+            ofd.Title = "What profile do you want?";
+
+            ofd.Filter = "Eriver Calibration Profile files (*.fish)|*.fish";
+            ofd.FilterIndex = 1;
+            ofd.RestoreDirectory = true;
+
+            if (ofd.ShowDialog() == true)
+            {
+                if ((fStream = ofd.OpenFile()) != null)
+                {
+                    try
+                    {
+                        var data = new byte[4096];
+                        fStream.Read(data, 0, data.Length);
+                        fStream.Close();
+                        TrackerFactory.GetTracker(TrackerType.Text, 1).SetCalibration(data);
+                    }
+                    catch (IOException exception)
+                    {
+                        MessageBox.Show("Could not load profile.\n" + exception.Message);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        MessageBox.Show("This tracker does not support this operation.");
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show("A unknown error occured.\n" + exception.Message);
+                    }
+                }
+            }
         }
 
         private void Save_Profile_Click(object sender, RoutedEventArgs e)
@@ -126,10 +167,27 @@ namespace Eriver.GUIServer
             {
                 if ((fStream = sfd.OpenFile()) != null)
                 {
-                    fStream.WriteByte(42);
-                    fStream.Close();
+                    try
+                    {
+                        var c = TrackerFactory.GetTracker(TrackerType.Text, 1).GetCalibration();
+                        fStream.Write(c, 0, c.Length);
+                        fStream.Close();
+                    }
+                    catch (IOException exception)
+                    {
+                        MessageBox.Show("Could not save profile.\n" + exception.Message);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        MessageBox.Show("This tracker does not support this operation.");
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show("A unknown error occured.\n" + exception.Message);
+                    }
                 }
             }
         }
+
     }
 }

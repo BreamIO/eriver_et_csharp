@@ -9,6 +9,7 @@ using Eriver.Network;
 using log4net;
 using Eriver.Trackers;
 using System.Net.Sockets;
+using EriverTrackers;
 
 namespace Eriver.GUIServer
 {
