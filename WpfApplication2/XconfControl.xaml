@@ -4,9 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <Label>Height</Label>
-        <TextBox w></TextBox>
-    </Grid>
+             d:DesignHeight="70" d:DesignWidth="200">
+    <StackPanel Orientation="Vertical" Margin="15 0" >
+        <StackPanel Orientation="Horizontal" Margin="0 12 0 -2">
+            <Label Width="80" Foreground="White">Height:</Label>
+            <TextBox Width="50" Height="20" Name="ScreenHeight" TextAlignment="Right">1</TextBox>
+            <Label Width="80" Foreground="White">mm</Label>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal" Margin="0 -2 0 0">
+            <Label Width="80" Foreground="White">Width:</Label>
+            <TextBox Width="50" Height="20" Name="ScreenWidth" ToolTip="" TextAlignment="Right">1</TextBox>
+            <Label Width="80" Foreground="White">mm</Label>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

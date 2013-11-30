@@ -69,7 +69,7 @@ namespace Eriver.GUIServer
                 Properties.Settings.Default.TrackerDeltaY,
                 Properties.Settings.Default.TrackerDeltaZ,
                 Properties.Settings.Default.TrackerDeltaAngle);
-                ch.GetTracker().SetXConfig(xconf, packet.StartCalibration.Angle);
+                //ch.GetTracker().SetXConfig(xconf, packet.StartCalibration.Angle);
                 ch.GetTracker().StartCalibration(defaultAction(ch, packet));
             }
         }

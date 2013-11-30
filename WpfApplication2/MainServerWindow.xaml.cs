@@ -59,6 +59,7 @@ namespace Eriver.GUIServer
         public void Start(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
+
             try {
                 server = new ETServer(Convert.ToByte(IdBox.Text), TrackerType.Text, Dispatcher);
                 Properties.Settings.Default.ID = Convert.ToByte(IdBox.Text);
@@ -69,12 +70,9 @@ namespace Eriver.GUIServer
                 return;
             }
 
-            //IdBox.IsEnabled = false;
             InActive = false;
             th = new Thread(server.Start);
             ClickSwap(button, Start, Stop);
-            //this.Resources["ButtonColor"] = Colors.Red;
-            //this.Resources["ButtonText"] = "Stop";
             ConnectionList.DataContext = server;
             try
             {

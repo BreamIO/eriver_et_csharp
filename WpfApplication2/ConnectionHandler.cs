@@ -80,6 +80,19 @@ namespace Eriver.GUIServer
             {
                 Run();
             }
+
+            //Finalize calibration if disconnecting during calibration.
+            tracker.GetState(delegate(int state, int error)
+            {
+                if ((state & 2) != 0)
+                {
+                    tracker.ClearCalibration(delegate(int res, int err)
+                    {
+                        tracker.EndCalibration(null);
+                    });
+                    
+                }
+            });
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
@@ -102,8 +115,17 @@ namespace Eriver.GUIServer
                     using (log4net.ThreadContext.Stacks["NDC"].Push("ConnHandler_Handlers"))
                     {
                         logger.Debug("Read packet: " + prot);
-                        var m = ConnHandler_Handlers.Messages[CommandConvert.ToByte(prot.Kind)]();
-                        m.Accept(this, prot);
+                        try
+                        {
+                            var m = ConnHandler_Handlers.Messages[CommandConvert.ToByte(prot.Kind)]();
+                            m.Accept(this, prot);
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            logger.Error("Package type not supported. Different versions?");
+                            stop.Set();
+                            break;
+                        }
                     }
                 }
                 catch (InvalidOperationException e)

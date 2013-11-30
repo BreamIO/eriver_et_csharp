@@ -92,7 +92,7 @@ namespace Eriver_Tests
             Assert.AreEqual(1, SyncGetState());
 
             tracker.Disable(null);
-            tracker.StartCalibration(0, null);
+            tracker.StartCalibration(null);
             Assert.AreEqual(2, SyncGetState());
 
             tracker.Enable(null);
@@ -118,7 +118,7 @@ namespace Eriver_Tests
         {
             AutoResetEvent done = new AutoResetEvent(false);
             int error = -1;
-            tracker.StartCalibration(0, delegate(int err, int result)
+            tracker.StartCalibration(delegate(int err, int result)
             {
                 error = err;
                 done.Set();
@@ -140,7 +140,7 @@ namespace Eriver_Tests
             //Ending Calibration while not calibrating should result in an error.
             Assert.AreNotEqual(0, error);
 
-            tracker.StartCalibration(0, delegate(int err, int res)
+            tracker.StartCalibration(delegate(int err, int res)
             {
                 done.Set();
             });
@@ -157,7 +157,7 @@ namespace Eriver_Tests
 
 
             //We should be able to end calibration after adding some points.
-            tracker.StartCalibration(0, delegate(int err, int res)
+            tracker.StartCalibration(delegate(int err, int res)
             {
                 done.Set();
             });
@@ -206,7 +206,7 @@ namespace Eriver_Tests
             //Ending Calibration while not calibrating should result in an error.
             Assert.AreNotEqual(0, error);
 
-            tracker.StartCalibration(0, delegate(int err, int res)
+            tracker.StartCalibration(delegate(int err, int res)
             {
                 done.Set();
             });
@@ -259,7 +259,7 @@ namespace Eriver_Tests
             done.WaitOne();
             Assert.AreNotEqual(0, error);
 
-            tracker.StartCalibration(0, delegate(int err, int res)
+            tracker.StartCalibration(delegate(int err, int res)
             {
                 done.Set();
             });

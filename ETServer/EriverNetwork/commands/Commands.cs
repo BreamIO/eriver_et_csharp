@@ -38,7 +38,7 @@ namespace Eriver.Network
         /// <summary>
         /// Ends the current calibration routine
         /// </summary>
-        EndCalibration = 3,
+        EndCalibration = 5,
 
         /// <summary>
         /// Clears the current calibration routine.
@@ -48,7 +48,7 @@ namespace Eriver.Network
         /// <summary>
         /// Used to add a point to the current calibration routine.
         /// </summary>
-        AddPoint = 5,
+        AddPoint = 3,
         
         /// <summary>
         /// Error handeling command

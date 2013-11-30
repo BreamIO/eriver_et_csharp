@@ -18,6 +18,10 @@ namespace Eriver.Network
     {
         static BinarySerializer serializer = new BinarySerializer();
         Stream stream;
+
+        /// <summary>
+        /// Description of the other end.
+        /// </summary>
         public readonly String Description;
 
         /// <summary>
