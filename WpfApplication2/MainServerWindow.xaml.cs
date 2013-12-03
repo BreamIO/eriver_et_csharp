@@ -163,27 +163,40 @@ namespace Eriver.GUIServer
 
             if (sfd.ShowDialog() == true)
             {
-                if ((fStream = sfd.OpenFile()) != null)
+                new Thread(delegate()
                 {
-                    try
+                    if ((fStream = sfd.OpenFile()) != null)
                     {
-                        var c = TrackerFactory.GetTracker(TrackerType.Text, 1).GetCalibration();
-                        fStream.Write(c, 0, c.Length);
-                        fStream.Close();
+                    
+                        try
+                        {
+                            var tracker = TrackerFactory.GetTracker(TrackerType.Text, 1);
+                            Thread.Sleep(2000);
+                            var c = tracker.GetCalibration();
+                            fStream.Write(c, 0, c.Length);
+                        }
+                        catch (IOException exception)
+                        {
+                            MessageBox.Show("Could not save profile.\n" + exception.Message);
+                            return;
+                        }
+                        catch (NotSupportedException)
+                        {
+                            MessageBox.Show("This tracker does not support this operation.");
+                            return;
+                        }
+                        catch (Exception exception)
+                        {
+                            MessageBox.Show("A unknown error occured.\n" + exception.Message + "\n" + exception.StackTrace);
+                            return;
+                        }
+                        finally
+                        {
+                            fStream.Close();
+                        }
+                        MessageBox.Show("Save of calibration profile completed!");
                     }
-                    catch (IOException exception)
-                    {
-                        MessageBox.Show("Could not save profile.\n" + exception.Message);
-                    }
-                    catch (NotSupportedException)
-                    {
-                        MessageBox.Show("This tracker does not support this operation.");
-                    }
-                    catch (Exception exception)
-                    {
-                        MessageBox.Show("A unknown error occured.\n" + exception.Message);
-                    }
-                }
+                }).Start();
             }
         }
 
